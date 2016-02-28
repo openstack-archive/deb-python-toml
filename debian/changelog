@@ -1,3 +1,9 @@
+python-toml (0.9.1-2) UNRELEASED; urgency=medium
+
+  * Fixed VCS URLs (https).
+
+ -- Ondřej Nový <novy@ondrej.org>  Sun, 28 Feb 2016 15:52:09 +0100
+
 python-toml (0.9.1-1) unstable; urgency=medium
 
   * Initial release. (Closes: #809808)
