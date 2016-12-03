@@ -171,9 +171,6 @@ def loads(s, _dict=dict):
             if openstring or multilinestr:
                 if not multilinestr:
                     raise TomlDecodeError("Unbalanced quotes")
-                if sl[i-1] == "'" or sl[i-1] == '"':
-                    sl[i] = sl[i-1]
-                    sl[i-3] = ' '
             elif openarr:
                 sl[i] = ' '
             else:
@@ -190,9 +187,12 @@ def loads(s, _dict=dict):
     multilinestr = ""
     multibackslash = False
     for line in s:
-        line = line.strip()
-        if line == "":
+        if not multikey or multibackslash:
+            line = line.strip()
+        if line == "" and not multikey:
             continue
+        if multilinestr == "'''\n":
+            mutlilinestr = "'''"
         if multikey:
             if multibackslash:
                 multilinestr += line
@@ -369,8 +369,10 @@ def _load_line(line, currentlevel, multikey, multibackslash):
             k -= 1
         if multibackslash:
             multilinestr = pair[1][:-1]
-        else:
+        elif len(pair[1]) > 3:
             multilinestr = pair[1] + "\n"
+        else:
+            multilinestr = pair[1]
         multikey = pair[0]
     else:
         value, vtype = _load_value(pair[1], strictly_valid)
